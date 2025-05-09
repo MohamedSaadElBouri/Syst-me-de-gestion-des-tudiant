@@ -1,0 +1,1 @@
+# Fichier définitt au python que notre app 'etudiant' est un paquet

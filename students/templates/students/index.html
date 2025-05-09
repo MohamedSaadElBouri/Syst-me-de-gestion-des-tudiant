@@ -1,0 +1,1114 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Espace Étudiant</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #0d47a1;
+            --secondary-color: #1976d2;
+            --accent-color: #2196f3;
+            --success-color: #14b8a6;
+            --success-dark: #0f766e;
+            --light-bg: #69f9d8;
+            --border-color: #99f6e4;
+            --text-dark: #134e4a;
+            --transition: all 0.3s ease;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow-x: hidden;
+        }
+
+        /* Improved Download Page */
+        #download-page {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            color: rgb(255, 255, 255);
+            transition: transform 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+            overflow-y: auto;
+            padding: 2rem 0;
+        }
+
+        #download-page.hidden {
+            transform: translateY(-100%);
+        }
+
+        .download-container {
+            max-width: 1000px;
+            text-align: center;
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+            margin: 1rem;
+            width: 100%;
+        }
+
+        .download-header {
+            margin-bottom: 2rem;
+            position: relative;
+        }
+
+        .download-header h1 {
+            font-weight: 700;
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            border-radius: 5rem;
+            color: #0cebb7dd;
+        }
+
+        .download-header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .download-search {
+            position: relative;
+            max-width: 500px;
+            margin: 0 auto 2rem;
+        }
+
+        .download-search input {
+            width: 100%;
+            padding: 12px 20px;
+            padding-left: 45px;
+            border: none;
+            border-radius: 50px;
+            background: rgba(255, 255, 255, 0.15);
+            color: white;
+            font-size: 1rem;
+            backdrop-filter: blur(5px);
+            transition: var(--transition);
+        }
+
+        .download-search input:focus {
+            outline: none;
+            background: rgba(255, 255, 255, 0.25);
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
+        }
+
+        .download-search input::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .download-search i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .download-tabs {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 2rem;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .download-tab {
+            padding: 8px 20px;
+            border-radius: 50px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            cursor: pointer;
+            transition: var(--transition);
+            border: none;
+            font-weight: 500;
+        }
+
+        .download-tab.active,
+        .download-tab:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .download-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .download-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 1.5rem;
+            text-align: center;
+            transition: var(--transition);
+            animation: fadeIn 0.5s ease-out forwards;
+            opacity: 0;
+            transform: translateY(20px);
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .download-card:nth-child(1) {
+            animation-delay: 0.1s;
+        }
+
+        .download-card:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .download-card:nth-child(3) {
+            animation-delay: 0.3s;
+        }
+
+        .download-card:nth-child(4) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .download-card:hover {
+            transform: translateY(-10px) scale(1.03);
+            background: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .download-card-icon {
+            background: rgba(255, 255, 255, 0.15);
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            transition: var(--transition);
+        }
+
+        .download-card:hover .download-card-icon {
+            transform: scale(1.1) rotate(5deg);
+            background: rgba(255, 255, 255, 0.25);
+        }
+
+        .download-card h3 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .download-card p {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            margin-bottom: 1rem;
+        }
+
+        .download-card .date {
+            font-size: 0.85rem;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 10px;
+            border-radius: 50px;
+            display: inline-block;
+            margin-bottom: 1rem;
+        }
+
+        .download-btn,
+        .enter-site-btn {
+            background: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 0.6rem 1.5rem;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            text-decoration: none;
+        }
+
+        .download-btn:hover,
+        .enter-site-btn:hover {
+            background: #1565c0;
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            color: white;
+        }
+
+        .download-btn:after,
+        .enter-site-btn:after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 5px;
+            height: 5px;
+            background: rgba(255, 255, 255, 0.5);
+            opacity: 0;
+            border-radius: 100%;
+            transform: scale(1, 1) translate(-50%);
+            transform-origin: 50% 50%;
+        }
+
+        .download-btn:hover:after,
+        .enter-site-btn:hover:after {
+            animation: ripple 1s ease-out;
+        }
+
+        @keyframes ripple {
+            0% {
+                transform: scale(0, 0);
+                opacity: 0.5;
+            }
+
+            100% {
+                transform: scale(20, 20);
+                opacity: 0;
+            }
+        }
+
+        .enter-site-btn {
+            background: transparent;
+            border: 2px solid white;
+            animation: pulse 2s infinite;
+            margin-top: 2rem;
+            font-size: 1.1rem;
+            padding: 0.8rem 2rem;
+        }
+
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.4);
+            }
+
+            70% {
+                box-shadow: 0 0 0 10px rgba(255, 255, 255, 0);
+            }
+
+            100% {
+                box-shadow: 0 0 0 0 rgba(255, 255, 255, 0);
+            }
+        }
+
+        .enter-site-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            animation: none;
+        }
+
+        /* Improved Navigation Bar */
+        .navbar {
+            padding: 0.8rem 1rem;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color)) !important;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transition: var(--transition);
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.4rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .navbar-brand i {
+            font-size: 1.8rem;
+            color: #fff;
+            transition: var(--transition);
+        }
+
+        .navbar-brand:hover i {
+            transform: rotate(15deg);
+        }
+
+        .navbar-nav {
+            gap: 0.5rem;
+        }
+
+        .navbar-nav .nav-item {
+            position: relative;
+        }
+
+        .navbar-nav .nav-link {
+            position: relative;
+            padding: 0.6rem 1rem;
+            font-weight: 500;
+            transition: var(--transition);
+            border-radius: 50px;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .navbar-nav .nav-link i {
+            transition: var(--transition);
+        }
+
+        .navbar-nav .nav-link:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .navbar-nav .nav-link:hover i {
+            transform: scale(1.2);
+        }
+
+        .navbar-nav .nav-link.active {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+
+        .navbar-toggler {
+            border: none;
+            padding: 0.5rem;
+            transition: var(--transition);
+        }
+
+        .navbar-toggler:focus {
+            box-shadow: none;
+            transform: rotate(90deg);
+        }
+
+        .navbar-toggler-icon {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255, 255, 255, 1%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e") !important;
+        }
+
+        /* Dropdown Menu */
+        .dropdown-menu {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            padding: 0,8rem;
+            width: 30px;
+            animation: fadeInDown 0.3s ease forwards;
+            transform-origin: top center;
+        }
+
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px) scale(0.95);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .dropdown-item {
+            padding: 0.7rem 1rem;
+            border-radius: 10px;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-dark);
+        }
+
+        .dropdown-item:hover {
+            background: rgba(20, 184, 166, 0.1);
+        }
+
+        .dropdown-item i {
+            color: var(--success-color);
+            transition: var(--transition);
+        }
+
+        .dropdown-item:hover i {
+            transform: scale(1.2);
+        }
+
+ 
+        .table {
+            background-color: var(--light-bg);
+            color: var(--text-dark);
+            border-radius: 15px;
+            overflow: hidden;
+            border-collapse: separate;
+            border-spacing: 0;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .table-hover tbody tr {
+            transition: var(--transition);
+        }
+
+        .table-hover tbody tr:hover {
+            background-color: #fef3c7 !important;
+            transform: translateX(5px);
+            box-shadow: -5px 0 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .table thead tr {
+            background-color: var(--success-color);
+        }
+
+        .table thead th,
+        .table thead td {
+            color: rgb(255, 0, 0) !important;
+            font-weight: 600;
+            border-bottom: 2px solid var(--success-dark);
+            padding: 15px;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+        }
+
+        .table tbody td {
+            border-color: var(--border-color);
+            padding: 12px 15px;
+            transition: var(--transition);
+            vertical-align: middle;
+        }
+
+        .table-hover tbody tr:hover td {
+            color: var(--text-dark);
+        }
+
+        .table tbody tr:nth-child(even) {
+            background-color: #e6fffa;
+        }
+
+        .btn {
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            border-radius: 50px;
+            padding: 0.5rem 1.2rem;
+            font-weight: 500;
+        }
+
+        .btn-icon {
+            width: 38px;
+            height: 38px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            padding: 0;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 5px;
+            height: 5px;
+            background: rgba(255, 255, 255, 0.5);
+            opacity: 0;
+            border-radius: 100%;
+            transform: scale(1, 1) translate(-50%);
+            transform-origin: 50% 50%;
+        }
+
+        .btn:hover::after {
+            animation: ripple 1s ease-out;
+        }
+
+        .card {
+            transition: var(--transition);
+            border-radius: 15px;
+            overflow: hidden;
+            border: none;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .card:hover {
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+            transform: translateY(-5px);
+        }
+
+        .card-header {
+            color: var(--success-color) !important;
+            transition: var(--transition);
+            background: linear-gradient(to right, rgba(20, 184, 166, 0.1), transparent);
+            padding: 1rem 1.5rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            border-bottom: 1px solid rgba(20, 184, 166, 0.1);
+        }
+
+        .card:hover .card-header {
+            background: linear-gradient(to right, rgba(20, 184, 166, 0.2), transparent);
+        }
+
+        .card-body {
+            padding: 1.5rem;
+        }
+
+        /* Button color theme */
+        .btn-success,
+        .btn-primary {
+            background-color: var(--success-color) !important;
+            border-color: var(--success-color) !important;
+        }
+
+        .btn-success:hover,
+        .btn-primary:hover {
+            background-color: var(--success-dark) !important;
+            border-color: var(--success-dark) !important;
+        }
+
+        /* Footer and alert styles */
+        footer {
+            background-color: #f8faf8;
+            padding: 1rem 0;
+            border-top: 1px solid #e9ecef;
+            color: brown;
+            transition: var(--transition);
+        }
+
+        footer span {
+            transition: var(--transition);
+            font-size: 0.9rem;
+        }
+
+        footer:hover span {
+            color: var(--success-color);
+            text-shadow: 0 0 5px rgba(20, 184, 166, 0.3);
+        }
+
+        #student-alert {
+            transition: var(--transition);
+            transform-origin: top;
+            border-color: var(--success-color);
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        #student-alert:not(.d-none) {
+            animation: slideDown 0.3s ease forwards;
+        }
+
+        .alert-info {
+            background-color: var(--light-bg) !important;
+            color: var(--text-dark) !important;
+        }
+
+        @keyframes slideDown {
+            from {
+                transform: scaleY(0);
+                opacity: 0;
+            }
+
+            to {
+                transform: scaleY(1);
+                opacity: 1;
+            }
+        }
+
+        /* Modal and icon animations */
+        .modal.fade .modal-dialog {
+            transition: transform 0.3s ease-out;
+            transform: scale(0.9);
+        }
+
+        .modal.show .modal-dialog {
+            transform: scale(1);
+        }
+
+        .modal-content {
+            border-radius: 15px;
+            border: none;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .modal-header {
+            border-bottom: 1px solid rgba(20, 184, 166, 0.2);
+            padding: 1.5rem;
+        }
+
+        .modal-footer {
+            border-top: 1px solid rgba(20, 184, 166, 0.2);
+            padding: 1.5rem;
+        }
+
+        .modal-title {
+            color: var(--success-color);
+            font-weight: 600;
+        }
+
+        .modal-body {
+            padding: 1.5rem;
+        }
+
+        .fa-solid {
+            transition: var(--transition);
+        }
+
+        .btn:hover .fa-solid,
+        .nav-link:hover .fa-solid {
+            transform: scale(1.2);
+        }
+
+        .fa-graduation-cap {
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-5px);
+            }
+        }
+
+        /* Accessibility focus styles */
+        a:focus,
+        button:focus,
+        input:focus {
+            outline: 3px solid rgba(20, 184, 166, 0.5);
+            outline-offset: 2px;
+        }
+
+        /* Skip to content link for accessibility */
+        .skip-link {
+            position: absolute;
+            top: -40px;
+            left: 0;
+            background: var(--success-color);
+            color: white;
+            padding: 8px;
+            z-index: 10000;
+            transition: top 0.3s;
+        }
+
+        .skip-link:focus {
+            top: 0;
+        }
+    </style>
+</head>
+
+<body class="d-flex flex-column min-vh-100">
+    <!-- Accessibility skip link -->
+    <a href="#main-content" class="skip-link">Skip to content</a>
+
+    <!-- Download Page with improved form -->
+    <div id="download-page" {% if not show_download %}class="hidden" {% endif %}>
+        <div class="download-container">
+            <div class="download-header">
+                <h1>Téléchargements</h1>
+                <p>Ressources essentielles pour votre parcours académique</p>
+            </div>
+
+            <!-- Search functionality -->
+            <div class="download-search">
+                <i class="fa-solid fa-search"></i>
+                <input type="text" placeholder="Rechercher des ressources..." id="download-search-input">
+            </div>
+
+            <!-- Category tabs -->
+            <div class="download-tabs">
+                <button class="download-tab active" data-category="all">Tous</button>
+                <button class="download-tab" data-category="guides">Guides</button>
+                <button class="download-tab" data-category="events">Événements</button>
+                <button class="download-tab" data-category="forms">Cours</button>
+            </div>
+
+            <div class="download-cards">
+                {% if guides %}
+                {% for guide in guides %}
+                <div class="download-card" data-category="guides">
+                    <div>
+                        <div class="download-card-icon">
+                            <i class="fa-solid fa-file-pdf fa-2x"></i>
+                        </div>
+                        <h3>{{ guide.title }}</h3>
+                        <p>Manuel pour les nouveaux étudiants</p>
+                    </div>
+                    <a href="{{ guide.pdf_file.url }}" class="download-btn">
+                        <i class="fa-solid fa-download"></i> Télécharger
+                    </a>
+                </div>
+                {% endfor %}
+                {% else %}
+                <div class="download-card" data-category="guides">
+                    <div>
+                        <div class="download-card-icon">
+                            <i class="fa-solid fa-file-pdf fa-2x"></i>
+                        </div>
+                        <h3>Aucun guide disponible</h3>
+                        <p>Aucun document n'a été ajouté</p>
+                    </div>
+                    <button class="download-btn" disabled>
+                        <i class="fa-solid fa-download"></i> Indisponible
+                    </button>
+                </div>
+                {% endif %}
+
+                <!-- Check if there are events -->
+                {% if events %}
+                {% for event in events %}
+                <div class="download-card" data-category="events">
+                    <div>
+                        <div class="download-card-icon">
+                            <i class="fa-solid fa-calendar-days fa-2x"></i>
+                        </div>
+                        <h3>{{ event.title }}</h3>
+                        <p>{{ event.description }}</p>
+                        <span class="date">
+                            <i class="fa-solid fa-clock me-1"></i>
+                            {{ event.event_date|date:"d/m/Y" }}
+                        </span>
+                    </div>
+                    <a href="#" class="download-btn">
+                        <i class="fa-solid fa-eye"></i> Voir détails
+                    </a>
+                </div>
+                {% endfor %}
+                {% else %}
+                <div class="download-card" data-category="events">
+                    <div>
+                        <div class="download-card-icon">
+                            <i class="fa-solid fa-calendar-days fa-2x"></i>
+                        </div>
+                        <h3>Aucun événement</h3>
+                        <p>Aucun événement n'a été ajouté</p>
+                    </div>
+                    <button class="download-btn" disabled>
+                        <i class="fa-solid fa-eye"></i> Indisponible
+                    </button>
+                </div>
+                {% endif %}
+
+                <!-- Check if there are forms -->
+                {% if forms %}
+                {% for form in forms %}
+                <div class="download-card" data-category="forms">
+                    <div>
+                        <div class="download-card-icon">
+                            <i class="fa-solid fa-book fa-2x"></i>
+                        </div>
+                        <h3>{{ form.name }}</h3>
+                        <p>Dernier Cours lancé</p>
+                    </div>
+                    <a href="{{ form.form_file.url }}" class="download-btn">
+                        <i class="fa-solid fa-download"></i> Télécharger
+                    </a>
+                </div>
+                {% endfor %}
+                {% else %}
+                <div class="download-card" data-category="forms">
+                    <div>
+                        <div class="download-card-icon">
+                            <i class="fa-solid fa-book fa-2x"></i>
+                        </div>
+                        <h3>Aucun Cours</h3>
+                        <p>Aucun Cours n'a été ajouté</p>
+                    </div>
+                    <button class="download-btn" enabled>
+                        <i class="fa-solid fa-download"></i> Indisponible
+                    </button>
+                </div>
+                {% endif %}
+            </div>
+
+            <button class="enter-site-btn" onclick="toggleDownloadPage()">
+                Accéder au Site <i class="fa-solid fa-arrow-right ms-2"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Improved Navigation Bar -->
+    <nav class="navbar navbar-expand-lg" data-bs-theme="dark">
+        <div class="container">
+            <a class="navbar-brand" href="{% url 'index' %}">
+                <i class="fa-solid fa-graduation-cap fa-lg"></i>
+                Mon Etudiant
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor01"
+                aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarColor01">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'download_page' %}">
+                            <i class="fa-solid fa-download me-1"></i> Téléchargements
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link d-inline-flex align-items-center" href="#" data-bs-toggle="modal"
+                            data-bs-target="#aboutModal">
+                            <i class="fa-solid fa-circle-info me-1"></i> À propos
+                        </a>
+                    </li>
+                    {% if user.is_authenticated %}
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
+                            data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fa-solid fa-user me-1"></i> {{ user.username }}
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="userDropdown">
+                          
+                               
+                            </li>
+                            <li><a class="dropdown-item" href="{% url 'deconnexion' %}"><i
+                                        class="fa-solid fa-sign-out-alt"></i> Déconnexion</a></li>
+                        </ul>
+                    </li>
+                    {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'connexion' %}">
+                            <i class="fa-solid fa-sign-in-alt me-1"></i> Connexion
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'inscription' %}">
+                            <i class="fa-solid fa-user-plus me-1"></i> Inscription
+                        </a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Contenu principal -->
+    <main id="main-content" class="container-fluid flex-grow-1">
+        <div class="d-flex justify-content-between align-items-center m-4">
+            <h3>Accueil</h3>
+        </div>
+
+        <div id="student-alert" class="alert alert-info alert-dismissible fade show m-4 d-none" role="alert">
+            <strong id="alert-content"></strong>
+            <button type="button" class="btn-close" aria-label="Close" onclick="hideAlert()"></button>
+        </div>
+
+        <div class="row">
+            <div class="col-12">
+                {% if students %}
+                <div class="card bg-light ms-4 me-4 mb-4">
+                    <div class="card-header">
+                        <i class="fa-solid fa-list fa-lg"></i> Etudiant Inscrit
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th scope="row">N°Etudiant</th>
+                                        <td>Nom</td>
+                                        <td>Prénom</td>
+                                        <td>Email</td>
+                                        <td>Fillière</td>
+                                        <td>Note</td>
+                                        <td>Actions</td>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for student in students %}
+                                    <tr>
+                                        <td>{{ student.student_number }}</td>
+                                        <td>{{ student.first_name }}</td>
+                                        <td>{{ student.last_name }}</td>
+                                        <td>{{ student.email }}</td>
+                                        <td>{{ student.field_of_study }}</td>
+                                        <td>{{ student.gpa }}</td>
+                                        <td>
+                                            <button type="button" class="btn btn-success btn-icon me-1" onclick="showStudentDetail('{{ student.img.url }}', '{{ student.age }}',
+                                                 '{{ student.baccalaureat_mark }}', '{{ student.absences }}')">
+                                                <i class="fa-solid fa-circle-info"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                {% else %}
+                <h5 class="alert alert-primary ms-4 me-4">Aucun Etudiant n'est inscrit</h5>
+                {% endif %}
+            </div>
+        </div>
+    </main>
+
+    <footer class="mt-auto py-3 text-center">
+        <div class="container">
+            <span>Copyright &copy;
+                <script>document.write(new Date().getFullYear())</script> Brevet de Technicien Superieur
+            </span>
+        </div>
+    </footer>
+
+    <!-- Modal À propos -->
+    <div class="modal fade" id="aboutModal" tabindex="-1" aria-labelledby="aboutModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="aboutModalLabel">À propos de moi</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Cette plateforme de gestion des étudiants a été développée dans le cadre d'un projet pédagogique.
+                        Elle permet d'enregistrer, consulter et organiser les informations relatives aux étudiants, y
+                        compris leurs coordonnées, notes, filière, et absences.</p>
+                    <p>Le développement du site s'est déroulé sur une durée d'environ 1 semaine, en utilisant les
+                        technologies suivantes : <strong>Django</strong> pour le back-end, <strong>Bootstrap</strong>
+                        pour l'interface, et <strong>SQLite</strong> comme base de données.</p>
+
+                    <div class="mt-4">
+                        <h6 class="mb-2">Contactez-moi</h6>
+                        <div class="input-group">
+                            <input type="text" class="form-control" value="lbourisaad6@gmail.com" id="emailInput"
+                                readonly>
+                            <button class="btn btn-primary" type="button" onclick="copyEmail()">
+                                <i class="fa-solid fa-copy"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <blockquote class="blockquote text-center mt-3">
+                        <p class="mb-0 fst-italic">"Un projet bien structuré est à moitié réalisé."</p>
+                    </blockquote>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Toggle download page visibility
+        function toggleDownloadPage() {
+            document.getElementById('download-page').classList.toggle('hidden');
+        }
+
+        function showStudentDetail(image, age, bac, absences) {
+            document.getElementById("alert-content").innerHTML = `<img src="${image}" alt="student image" class="img-thumbnail mb-2" style="max-height: 150px;">
+            &nbsp; &nbsp; âge: <strong>${age}</strong> | Note de baccalauréat: <strong>${bac}</strong> | &nbsp; Abscence: <strong>${absences}</strong>`;
+            document.getElementById("student-alert").classList.remove("d-none");
+        }
+
+        function hideAlert() {
+            document.getElementById("student-alert").classList.add("d-none");
+        }
+
+        // Download page filtering
+        document.addEventListener('DOMContentLoaded', function () {
+            // Tab filtering
+            const tabs = document.querySelectorAll('.download-tab');
+            const cards = document.querySelectorAll('.download-card');
+
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    tabs.forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+
+                    const category = tab.dataset.category;
+
+                    cards.forEach(card => {
+                        if (category === 'all' || card.dataset.category === category) {
+                            card.style.display = 'flex';
+                        } else {
+                            card.style.display = 'none';
+                        }
+                    });
+                });
+            });
+
+            const searchInput = document.getElementById('download-search-input');
+
+            searchInput.addEventListener('input', () => {
+                const searchTerm = searchInput.value.toLowerCase();
+
+                cards.forEach(card => {
+                    const title = card.querySelector('h3').textContent.toLowerCase();
+                    const description = card.querySelector('p').textContent.toLowerCase();
+
+                    if (title.includes(searchTerm) || description.includes(searchTerm)) {
+                        card.style.display = 'flex';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+            });
+
+            const card = document.querySelector('.card');
+            if (card) {
+                setTimeout(() => {
+                    card.style.opacity = '0';
+                    card.style.transform = 'translateY(20px)';
+                    card.style.transition = 'all 0.5s ease';
+                    setTimeout(() => {
+                        card.style.opacity = '1';
+                        card.style.transform = 'translateY(0)';
+                    }, 100);
+                }, 300);
+            }
+
+            document.querySelectorAll('.download-btn').forEach(btn => {
+                btn.addEventListener('mouseenter', function () {
+                    if (!this.hasAttribute('disabled')) {
+                        this.style.transform = 'scale(1.05)';
+                    }
+                });
+                btn.addEventListener('mouseleave', function () {
+                    if (!this.hasAttribute('disabled')) {
+                        this.style.transform = 'scale(1)';
+                    }
+                });
+            });
+        });
+
+        function copyEmail() {
+            navigator.clipboard.writeText(document.getElementById('emailInput').value);
+            const btn = document.querySelector('[onclick="copyEmail()"]');
+            btn.innerHTML = '<i class="fa-solid fa-check"></i>';
+            setTimeout(() => {
+                btn.innerHTML = '<i class="fa-solid fa-copy"></i>';
+            }, 500);
+        }
+    </script>
+</body>
+
+</html>
